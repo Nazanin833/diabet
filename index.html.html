@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیش‌بینی دیابت بر اساس قوانین</title>
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .result-0 {
+            background-color: #d5f5e3;
+            color: #27ae60;
+        }
+        .result-1 {
+            background-color: #f5d5d5;
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>پیش‌بینی دیابت (بر اساس قوانین تصمیم‌گیری)</h1>
+    <div class="form-group">
+        <label for="glucose">Glucose:</label>
+        <input type="number" id="glucose" step="0.1" placeholder="مثال: 120">
+    </div>
+    <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" id="age" placeholder="مثال: 35">
+    </div>
+    <div class="form-group">
+        <label for="bmi">BMI:</label>
+        <input type="number" id="bmi" step="0.1" placeholder="مثال: 28.5">
+    </div>
+    <div class="form-group">
+        <label for="dpf">Diabetes Pedigree Function:</label>
+        <input type="number" id="dpf" step="0.001" placeholder="مثال: 0.62">
+    </div>
+    <div class="form-group">
+        <label for="pregnancies">Pregnancies:</label>
+        <input type="number" id="pregnancies" placeholder="مثال: 2">
+    </div>
+    <button onclick="predict()">پیش‌بینی</button>
+    <div id="result"></div>
+
+    <script>
+        function predict() {
+            const glucose = parseFloat(document.getElementById("glucose").value);
+            const age = parseFloat(document.getElementById("age").value);
+            const bmi = parseFloat(document.getElementById("bmi").value);
+            const dpf = parseFloat(document.getElementById("dpf").value);
+            const pregnancies = parseFloat(document.getElementById("pregnancies").value);
+
+            // اعتبارسنجی ورودی
+            if (isNaN(glucose) || isNaN(age) || isNaN(bmi) || isNaN(dpf) || isNaN(pregnancies)) {
+                alert("لطفاً تمامی فیلدها را به درستی پر کنید.");
+                return;
+            }
+
+            let result = 0;
+
+            if (glucose <= 159) {
+                if (age <= 29) {
+                    result = 0;
+                } else {
+                    if (bmi <= 26.7) {
+                        result = 0;
+                    } else {
+                        if (dpf <= 0.619) {
+                            if (bmi <= 40.9) {
+                                result = 0;
+                            } else {
+                                result = 1;
+                            }
+                        } else {
+                            if (age <= 44) {
+                                if (age <= 33) {
+                                    result = 1;
+                                } else {
+                                    if (pregnancies <= 6) {
+                                        result = 0;
+                                    } else {
+                                        result = 1;
+                                    }
+                                }
+                            } else {
+                                result = 1;
+                            }
+                        }
+                    }
+                }
+            } else {
+                result = 1;
+            }
+
+            const resultDiv = document.getElementById("result");
+            resultDiv.textContent = result === 1 ? "نتیجه: خطر دیابت (1)" : "نتیجه: بدون خطر دیابت (0)";
+            resultDiv.className = result === 1 ? "result-1" : "result-0";
+        }
+    </script>
+</body>
+</html>
